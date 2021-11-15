@@ -6,6 +6,7 @@ import os
 
 from ultranet_functions import conv2d
 from ultranet_functions import relu
+from ultranet_functions import create_quantization
 from ultranet_functions import maxpool2d
 from ultranet_functions import batchnorm2d
 from load_parameters_ultranet_4w4a import load_np_params
@@ -46,7 +47,7 @@ def build_ultranet(
     ):
     conv1 = conv2d(input_image, weight_conv1, name="conv")
     batchnorm1 = batchnorm2d(conv1, weight_batchnorm1, bias_batchnorm1, running_mean_batchnorm1, running_var_batchnorm1, name="batch_norm1")
-    relu1 = relu(batchnorm1, name="relu1") 
+    relu1 = create_quantization(batchnorm1, name="relu1") 
     pool1 = maxpool2d(relu1, name="pool1") # out: (batch_size, 16, 80, 160)
     return pool1
 
