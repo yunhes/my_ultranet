@@ -146,13 +146,12 @@ def relu_bitshift(data, name='relu'):
     print("relu data type is: " + str(data.dtype))
     D = 1 << (4 - 1 + 4 + 8);
     bn_res = hcl.compute(data.shape, lambda *y: hcl.select(data[y] < 0, hcl.cast(data.dtype, 0), data[y]), name)
-    for res in bn_res:
-        if res > 0:
-            res = (res + (D >> 1)) >> 15
-            if res > 15:
-                res = 15
-            else:
-                res = res
-        else:
-            res = 0
+    
+    #np_bn = bn_res.asnumpy()
+    print(bn_res)
+    bn_res = hcl.compute(bn_res.shape, lambda *y: hcl.select(bn_res[y] > 0, ((bn_res[y] + (D >> 1)) >> 32), bn_res[y]), name)
+
+    print("relu data out type is: " + str(bn_res.dtype))
     return bn_res
+
+

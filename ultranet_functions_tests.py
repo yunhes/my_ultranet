@@ -5,18 +5,19 @@ from ultranet_functions import relu_bitshift
 from ultranet_functions import maxpool2d
 from ultranet_functions import batchnorm2d
 
+from ultranet_functions import relu
 hcl.init()
 
 # Test ReLU
 def test_relu():
     print("\nTesting ReLU\n")
-    A = hcl.placeholder((2, 3), "A")
+    A = hcl.placeholder((2, 3), "A", hcl.UInt(15))
     s = hcl.create_schedule(A, relu_bitshift)
     f = hcl.build(s)
 
-    np_A = np.asarray([[1., -2., 3.], [4., -5., 6]])
-    hcl_A = hcl.asarray(np_A)
-    hcl_B = hcl.asarray(np.zeros(A.shape))
+    np_A = np.asarray([[133452, -201, 300], [411, -5, 6]], dtype = np.uint)
+    hcl_A = hcl.asarray(np_A, hcl.UInt(15))
+    hcl_B = hcl.asarray(np.zeros(A.shape), hcl.Int(32))
 
     f(hcl_A, hcl_B)
     np_A = hcl_A.asnumpy()
@@ -27,6 +28,7 @@ def test_relu():
     print("\nOutput array:")
     print(np_B)
 
+test_relu()
 # # Test MaxPool
 # def test_maxpool2d():
 #     print("\nTesting MaxPool\n")
