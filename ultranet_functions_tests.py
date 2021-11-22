@@ -9,6 +9,7 @@ from ultranet_functions import relu
 hcl.init()
 
 # Test ReLU
+# TODO: HCL input
 def test_relu():
     print("\nTesting ReLU\n")
     A = hcl.placeholder((2, 3), "A", hcl.UInt(15))

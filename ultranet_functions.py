@@ -152,6 +152,4 @@ def relu_bitshift(data, name='relu'):
     bn_res = hcl.compute(bn_res.shape, lambda *y: hcl.select(bn_res[y] > 0, ((bn_res[y] + (D >> 1)) >> 32), bn_res[y]), name)
 
     print("relu data out type is: " + str(bn_res.dtype))
-    return bn_res
-
-
+    return bn_re
