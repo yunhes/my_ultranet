@@ -8,15 +8,16 @@ from ultranet_functions import batchnorm2d
 hcl.init()
 
 # Test ReLU
+# TODO: HCL input
 def test_relu():
     print("\nTesting ReLU\n")
-    A = hcl.placeholder((2, 3), "A")
+    A = hcl.placeholder((2, 3), "A", hcl.UInt(15))
     s = hcl.create_schedule(A, relu_bitshift)
     f = hcl.build(s)
 
     np_A = np.asarray([[1., -2., 3.], [4., -5., 6]])
     hcl_A = hcl.asarray(np_A)
-    hcl_B = hcl.asarray(np.zeros(A.shape))
+    hcl_B = hcl.asarray(np.zeros(A.shape), dtype = hcl.Fixed(15, 8))
 
     f(hcl_A, hcl_B)
     np_A = hcl_A.asnumpy()

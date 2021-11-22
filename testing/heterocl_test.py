@@ -10,13 +10,14 @@ from ultranet_functions import create_quantization
 from ultranet_functions import maxpool2d
 from ultranet_functions import batchnorm2d
 from load_parameters_ultranet_4w4a import load_np_params
+from ultranet_functions import uniform_quantize
 
 """
 This file outputs the HeteroCL outputs of ultranet layers, 
 uses the ultranet_4w4a.pt file as its weights, 
 and uses the image car16_0001 as the input file.
 """
-
+dataFlag = 0
 hcl.init(hcl.Float())
 
 ###############################################################################
@@ -24,6 +25,7 @@ hcl.init(hcl.Float())
 ###############################################################################
 
 example_img_path = "./example_images/car16_0001_resized.jpg"
+#TODO: should be the old one
 weights_path = "./weights/ultranet_4w4a.pt"
 output_path = "./outputs/"
 
@@ -47,7 +49,9 @@ def build_ultranet(
     ):
     conv1 = conv2d(input_image, weight_conv1, name="conv")
     batchnorm1 = batchnorm2d(conv1, weight_batchnorm1, bias_batchnorm1, running_mean_batchnorm1, running_var_batchnorm1, name="batch_norm1")
-    relu1 = create_quantization(batchnorm1, name="relu1") 
+    relu1 = relu(batchnorm1, name="relu1") 
+    relu1Out = uniform_quantize(relu1, 4, name="relu1Out")
+    #TODO: Insert check fucntion here
     pool1 = maxpool2d(relu1, name="pool1") # out: (batch_size, 16, 80, 160)
     return pool1
 

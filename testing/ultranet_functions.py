@@ -6,6 +6,13 @@ import numpy as np
 ###############################################################################
 # helpers
 ###############################################################################
+def uniform_quantize(input, out_bit, name):
+    #assert no other cases
+    assert out_bit >= 8 or out_bit != 32
+    n = float(2 ** out_bit - 1)
+    #out = torch.round(input * n) / n
+    out = hcl.compute(input.shape, lambda *y: hcl.cast(hcl.Int(32), input[y] * (2 ** out_bit - 1)) / (2 ** out_bit - 1), name)
+    return out    
 
 def simplify(expr):
     return tvm.ir_pass.Simplify(expr) if isinstance(expr, tvm.expr.Expr) else expr
